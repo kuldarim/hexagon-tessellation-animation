@@ -23,6 +23,8 @@ var myShapeWiggleTransform= myShapeGroup1.property("Contents").addProperty("ADBE
 var myShapeZigZag= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Zigzag");
 
 
+// http://www.storminthecastle.com/2013/07/24/how-you-can-draw-regular-polygons-with-the-html5-canvas-api/
+// http://scienceprimer.com/drawing-regular-polygons-javascript-canvas
 function getPolyginVertices(numberOfSides, size, Xcenter, Ycenter) {
     var verticesArray = [];        
  
