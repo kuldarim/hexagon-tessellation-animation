@@ -1,36 +1,68 @@
 ﻿app.project.close(CloseOptions.DO_NOT_SAVE_CHANGES)
 var proj= app.newProject();
+
+// constants
+var SIZE = 50;
+
 var myComp = proj.items.addComp("test2",1280,720,1,60,25);
 myComp.openInViewer();
-var myShape = myComp.layers.addShape();
-myShape.name = ("contents");
-var myShapeContent1 = myShape.property("Contents").addProperty("ADBE Vector Group");
-var myShapeGroup1 = myShape.property("Contents").property("Group 1");
 
-var myShapePath= myShapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
-var myShapeMask = myShapePath.property("Path");
-var myShapeM = myShapeMask.value;
-myShapeM.vertices = getPolyginVertices(6, 50, 25, 25);
-myShapeM.closed = true;
-myShapeMask.setValue(myShapeM);
-var myShapeFill= myShapeGroup1.property("Contents").addProperty("ADBE Vector Graphic - Fill");
+drawHexagon("initial", 0, 0, 6);
 
-var myShapeRoundCorners= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - RC");
-var myShapeTrimPaths= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Trim");
-var myShapeTwist= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Twist");
-var myShapeWigglePaths= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Roughen");
-var myShapeWiggleTransform= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Wiggler");
-var myShapeZigZag= myShapeGroup1.property("Contents").addProperty("ADBE Vector Filter - Zigzag");
+drawHexagonRing(0,0,6,1);
+drawHexagonRing(0,0,6,2);
+drawHexagonRing(0,0,6,3);
+
+function drawHexagonRing(x, y, n, r) {
+    var dc = SIZE * Math.sqrt(3);
+    var xc = x;
+    var yc = y-r*dc;
+    var dx = -dc* Math.sqrt(3)/2;
+    var dy = dc/2;
+    for (var i = 0; i < 6; i++) {
+        for (var j = 0; j < r; j++) {
+            var xc = xc + dx;
+            var yc = yc + dy;
+            drawHexagon(i+'_'+j, xc, yc, n);
+        }
+        var tmpdx = dx;
+        var tmpdy = dy;
+        dx = Math.cos(Math.PI/3)*tmpdx+Math.sin(Math.PI/3)*tmpdy;
+        dy = -Math.sin(Math.PI/3)*tmpdx+Math.cos(Math.PI/3)*tmpdy;
+    }
+}
+
+function drawHexagon(name, x, y, n) {
+    var shapeVertices = getPolyginVertices(n, SIZE, x, y);
+    addShape(name, shapeVertices);
+}
+
+function addShape(name, vertices) {
+    var myShape = myComp.layers.addShape();
+    myShape.name = (name);
+    var myShapeContent1 = myShape.property("Contents").addProperty("ADBE Vector Group");
+    var myShapeGroup1 = myShape.property("Contents").property("Group 1");
+
+    var myShapePath= myShapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
+    var myShapeMask = myShapePath.property("Path");
+    var myShapeM = myShapeMask.value;
+    myShapeM.vertices = vertices;
+    myShapeM.closed = true;
+    myShapeMask.setValue(myShapeM);
+    var myShapeFill= myShapeGroup1.property("Contents").addProperty("ADBE Vector Graphic - Fill");
+}
 
 
 // http://www.storminthecastle.com/2013/07/24/how-you-can-draw-regular-polygons-with-the-html5-canvas-api/
 // http://scienceprimer.com/drawing-regular-polygons-javascript-canvas
 function getPolyginVertices(numberOfSides, size, Xcenter, Ycenter) {
-    var verticesArray = [];        
+    var verticesArray = [];
  
     for (var i = 0; i <= numberOfSides; i++) {
-        var x = Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides);
-        var y = Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides);
+        var angleDeg = 60 * i;
+        var angleRad = Math.PI / 180 * angleDeg;
+        var x = Xcenter + size * Math.cos(angleRad);
+        var y = Ycenter + size * Math.sin(angleRad);
         verticesArray.push([x,y]);
     }
 
