@@ -13,6 +13,7 @@ drawHexagonRing(0,0,6,1);
 drawHexagonRing(0,0,6,2);
 drawHexagonRing(0,0,6,3);
 
+// http://www.redblobgames.com/grids/hexagons/
 function drawHexagonRing(x, y, n, r) {
     var dc = SIZE * Math.sqrt(3);
     var xc = x;
