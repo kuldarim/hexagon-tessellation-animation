@@ -60,7 +60,7 @@ function getIndexFromCoordinates(array, ringsNumber) {
     var x = element[0];
     var y = element[1];
     if (COORDINATES[ringsNumber - 1]['' + parseInt(x) + parseInt(y)]) {
-      index = i + 1;
+      index = i;
     }
   }
 
