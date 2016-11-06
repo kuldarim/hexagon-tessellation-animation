@@ -3,30 +3,29 @@ var proj= app.newProject();
 
 // constants
 var SIZE = 50;
-var TIME = 120;
-var INDEX = 0;
+var TIME = 4;
 
-var myComp = proj.items.addComp("test2",1280,720,1,TIME,25);
+var myComp = proj.items.addComp("hexagon-tessellation",1280,720,1,TIME,25);
 myComp.openInViewer();
 
-drawHexagon("initial", 0, 0, 6);
+drawHexagon("initial", 0, 0, 6, 0);
 drawHexagonRing(0,0,6,1);
 drawHexagonRing(0,0,6,2);
 drawHexagonRing(0,0,6,3);
 
 // http://www.redblobgames.com/grids/hexagons/ 
 // http://stackoverflow.com/questions/14916941/draw-a-hexagon-tessellation-animation-in-python
-function drawHexagonRing(x, y, n, r) {
+function drawHexagonRing(x, y, n, ringsNumber) {
     var dc = SIZE * Math.sqrt(3);
     var xc = x;
-    var yc = y-r*dc;
+    var yc = y-ringsNumber*dc;
     var dx = -dc* Math.sqrt(3)/2;
     var dy = dc/2;
     for (var i = 0; i < 6; i++) {
-        for (var j = 0; j < r; j++) {
+        for (var j = 0; j < ringsNumber; j++) {
             var xc = xc + dx;
             var yc = yc + dy;
-            drawHexagon(i+'_'+j, xc, yc, n);
+            drawHexagon(i+'_'+j, xc, yc, n, ringsNumber);
         }
         var tmpdx = dx;
         var tmpdy = dy;
@@ -35,12 +34,12 @@ function drawHexagonRing(x, y, n, r) {
     }
 }
 
-function drawHexagon(name, x, y, n) {
+function drawHexagon(name, x, y, n, ringsNumber) {
     var shapeVertices = getPolyginVertices(n, SIZE, x, y);
-    addShape(name, shapeVertices);
+    addShape(name, shapeVertices, ringsNumber);
 }
 
-function addShape(name, vertices) {
+function addShape(name, vertices, ringsNumber) {
     var myShape = myComp.layers.addShape();
     myShape.name = (name);
     var myShapeContent1 = myShape.property("Contents").addProperty("ADBE Vector Group");
@@ -61,9 +60,8 @@ function addShape(name, vertices) {
 
     // add animation keyframes
 
-    trim.property("End").setValueAtTime(INDEX, 0);
-    INDEX++;
-    trim.property("End").setValueAtTime(INDEX, 100);
+    trim.property("End").setValueAtTime(ringsNumber, 0);
+    trim.property("End").setValueAtTime(ringsNumber + 1, 100);
 
 }
 
