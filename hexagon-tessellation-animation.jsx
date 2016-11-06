@@ -2,9 +2,9 @@
 var proj= app.newProject();
 
 // constants
-var SIZE = 50;
-var TIME = 4;
-var COORDINATES = [{},{},{},{}];
+var SIZE = 20;
+var TIME = 7;
+var COORDINATES = [{},{},{},{}, {}, {}, {}, {}, {}];
 
 var myComp = proj.items.addComp("hexagon-tessellation",1280,720,1,TIME,25);
 myComp.openInViewer();
@@ -13,6 +13,9 @@ drawHexagon("initial", 0, 0, 6, 0);
 drawHexagonRing(0, 0, 6, 1);
 drawHexagonRing(0, 0, 6, 2);
 drawHexagonRing(0, 0, 6, 3);
+drawHexagonRing(0, 0, 6, 4);
+drawHexagonRing(0, 0, 6, 5);
+drawHexagonRing(0, 0, 6, 6);
 
 // http://www.redblobgames.com/grids/hexagons/ 
 // http://stackoverflow.com/questions/14916941/draw-a-hexagon-tessellation-animation-in-python
@@ -45,6 +48,32 @@ function drawHexagon(name, x, y, n, ringsNumber) {
       addShape(name, shapeVertices, ringsNumber);
   }
   
+}
+
+function addShape(name, vertices, ringsNumber) {
+    var myShape = myComp.layers.addShape();
+    myShape.name = (name);
+    var myShapeContent1 = myShape.property("Contents").addProperty("ADBE Vector Group");
+    var myShapeGroup1 = myShape.property("Contents").property("Group 1");
+
+    var myShapePath= myShapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
+    var myShapeMask = myShapePath.property("Path");
+    var myShapeM = myShapeMask.value;
+    myShapeM.vertices = vertices;
+    myShapeMask.setValue(myShapeM);
+
+    myShapeGroup1.property("Contents")
+        .addProperty("ADBE Vector Graphic - Stroke")
+        .property("Color").setValue([0, 0, 0]);
+
+    var trim = myShape.property("Contents")
+        .addProperty("ADBE Vector Filter - Trim");
+
+    // add animation keyframes
+
+    trim.property("End").setValueAtTime(ringsNumber, 0);
+    trim.property("End").setValueAtTime(ringsNumber + 1, 100);
+
 }
 
 function changeOrder(array, index) {
