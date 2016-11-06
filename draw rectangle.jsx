@@ -4,14 +4,13 @@ var proj= app.newProject();
 // constants
 var SIZE = 50;
 
-var myComp = proj.items.addComp("test2",1280,720,1,60,25);
+var myComp = proj.items.addComp("test2",1280,720,1,10,25);
 myComp.openInViewer();
 
 drawHexagon("initial", 0, 0, 6);
-
 drawHexagonRing(0,0,6,1);
-drawHexagonRing(0,0,6,2);
-drawHexagonRing(0,0,6,3);
+// drawHexagonRing(0,0,6,2);
+// drawHexagonRing(0,0,6,3);
 
 // http://www.redblobgames.com/grids/hexagons/
 function drawHexagonRing(x, y, n, r) {
@@ -48,9 +47,19 @@ function addShape(name, vertices) {
     var myShapeMask = myShapePath.property("Path");
     var myShapeM = myShapeMask.value;
     myShapeM.vertices = vertices;
-    myShapeM.closed = true;
     myShapeMask.setValue(myShapeM);
-    var myShapeFill= myShapeGroup1.property("Contents").addProperty("ADBE Vector Graphic - Fill");
+
+
+    myShapeGroup1.property("Contents")
+        .addProperty("ADBE Vector Graphic - Stroke")
+        .property("Color").setValue([0, 0, 0]);
+
+    var trim = myShape.property("Contents")
+        .addProperty("ADBE Vector Filter - Trim");
+
+    trim.property("End").setValueAtTime(0,0);
+    trim.property("End").setValueAtTime(10,100);
+
 }
 
 
