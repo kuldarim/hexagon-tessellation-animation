@@ -5,9 +5,9 @@ var proj= app.newProject();
 var TIME = 7;
 var COORDINATES = [];
 
-var SIZE = prompt("Iveskite apskritimo ploti", 50);
+var SIZE = prompt("Iveskite apskritimo ploti", 100);
 
-var myComp = proj.items.addComp("hexagon-tessellation", 400, 400, 1, TIME, 25);
+var myComp = proj.items.addComp("hexagon-tessellation", 600, 400, 1, TIME, 25);
 myComp.openInViewer();
 
 var x = myComp.width / 2;
@@ -20,7 +20,7 @@ var BOTTOM_RIGHT = [x, -y];
 draw(myComp);
 
 function draw(composition) {
-  var positionX = 0;
+  var positionX = 200;
   var positionY = 0;
 
   // Draw center hexagon
@@ -37,6 +37,9 @@ function draw(composition) {
   while (isInBoundaries) {
     isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
     alert(i);
+    if (i > 20) {
+     isInBoundaries = false;
+    }
     i++;
   }
 }
@@ -59,7 +62,9 @@ function drawHexagonRing(x, y, n, ringsNumber) {
       drawHexagon(ringsNumber + '_' + i + '_' + j, xc, yc, n, ringsNumber);
       isHexagonInBoundaries.push(isInBoundaries(xc, yc));
     }
-    isHexagonInBoundaries.push(allAreTrue(isHexagonInBoundaries));
+    if (isHexagonInBoundaries.length > 0) {
+    	allHexagonsAreInBoundaries.push(allAreTrue(isHexagonInBoundaries));
+    }
     var tmpdx = dx;
     var tmpdy = dy;
     dx = Math.cos(Math.PI / 3) * tmpdx + Math.sin(Math.PI / 3) * tmpdy;
@@ -70,18 +75,16 @@ function drawHexagonRing(x, y, n, ringsNumber) {
 }
 
 function isInBoundaries(x, y) {
-  var isTopLeft = TOP_LEFT[0] < x && TOP_LEFT[1] < y;
-  var isTopRight = TOP_RIGHT[0] < x && TOP_RIGHT[1] < y;
-  var isBottomLeft = BOTTOM_LEFT[0] < x && BOTTOM_LEFT[1] < y;
-  var isBottomRight = BOTTOM_RIGHT[0] < x && BOTTOM_RIGHT[1] < y;
+  var inX = x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
+  var inY = y > BOTTOM_LEFT[1] && y < TOP_RIGHT[1];
 
-  return isTopLeft && isTopRight && isBottomLeft && isBottomRight;
+  return inX && inY;
 }
 
 function allAreTrue(array) {
-  var yes = true;
+  var yes = false;
   for(var i = 0; i < array.length; i++) {
-    yes = yes && array[i];
+    yes = yes || array[i];
   }
 
   return yes;
