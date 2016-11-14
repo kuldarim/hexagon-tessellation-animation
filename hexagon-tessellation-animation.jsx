@@ -5,9 +5,9 @@ var proj= app.newProject();
 var TIME = 7;
 var COORDINATES = [];
 
-var SIZE = parseInt(prompt("Iveskite apskritimo ploti", 100));
-var positionX = parseInt(prompt("centro X", 100));
-var positionY = parseInt(prompt("centro Y", 0));
+var SIZE = parseInt(prompt("Enter circle width", 100));
+var positionX = parseInt(prompt("Enter center hexagon X coordinate", 100));
+var positionY = parseInt(prompt("Enter center hexagon Y coordinate", 0));
 
 var composition = proj.items.addComp("hexagon-tessellation", 700, 400, 1, TIME, 25);
 composition.openInViewer();
