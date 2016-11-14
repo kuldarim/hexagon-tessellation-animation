@@ -8,8 +8,10 @@ var COORDINATES = [];
 var SIZE = parseInt(prompt("Enter circle width", 100));
 var positionX = parseInt(prompt("Enter center hexagon X coordinate", 100));
 var positionY = parseInt(prompt("Enter center hexagon Y coordinate", 0));
+var WIDTH = parseInt(prompt("Enter center hexagon Y coordinate", 700));
+var HEIGHT = parseInt(prompt("Enter center hexagon Y coordinate", 400));
 
-var composition = proj.items.addComp("hexagon-tessellation", 700, 400, 1, TIME, 25);
+var composition = proj.items.addComp("hexagon-tessellation", WIDTH, HEIGHT, 1, TIME, 25);
 composition.openInViewer();
 
 var x = composition.width / 2;
