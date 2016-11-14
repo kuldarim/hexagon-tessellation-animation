@@ -9,28 +9,31 @@ var SIZE = parseInt(prompt("Iveskite apskritimo ploti", 100));
 var positionX = parseInt(prompt("centro X", 100));
 var positionY = parseInt(prompt("centro Y", 0));
 
-var myComp = proj.items.addComp("hexagon-tessellation", 700, 400, 1, TIME, 25);
-myComp.openInViewer();
+var composition = proj.items.addComp("hexagon-tessellation", 700, 400, 1, TIME, 25);
+composition.openInViewer();
 
-var x = myComp.width / 2;
-var y = myComp.height / 2;
+var x = composition.width / 2;
+var y = composition.height / 2;
 var TOP_LEFT = [-x, y];
 var TOP_RIGHT = [x, y];
 var BOTTOM_LEFT = [-x, -y];
 var BOTTOM_RIGHT = [x, -y];
 
-draw(myComp);
+draw();
 
-function draw(composition) {
+function draw() {
   // Draw center hexagon
   drawHexagon("initial", positionX, positionY, 6, 0);
   
   var isInBoundaries = true;
   var i = 1;
+  // Draw rings while inside bondaries
   while (isInBoundaries) {
     isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
     i++;
   }
+
+  composition.duration = i;
 }
 
 // http://www.redblobgames.com/grids/hexagons/ 
@@ -63,22 +66,6 @@ function drawHexagonRing(x, y, n, ringsNumber) {
   return allAreTrue(allHexagonsAreInBoundaries);
 }
 
-function isInBoundaries(x, y) {
-  var inX = x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
-  var inY = y > BOTTOM_LEFT[1] && y < TOP_RIGHT[1];
-
-  return inX && inY;
-}
-
-function allAreTrue(array) {
-  var yes = false;
-  for(var i = 0; i < array.length; i++) {
-    yes = yes || array[i];
-  }
-
-  return yes;
-}
-
 function drawHexagon(name, x, y, n, ringsNumber) {
   COORDINATES.push({});
   var shapeVertices = getPolyginVertices(n, SIZE, x, y, ringsNumber);
@@ -95,22 +82,22 @@ function drawHexagon(name, x, y, n, ringsNumber) {
 }
 
 function addShape(name, vertices, ringsNumber) {
-    var myShape = myComp.layers.addShape();
-    myShape.name = (name);
-    var myShapeContent1 = myShape.property("Contents").addProperty("ADBE Vector Group");
-    var myShapeGroup1 = myShape.property("Contents").property("Group 1");
+    var shape = composition.layers.addShape();
+    shape.name = (name);
+    var shapeContent1 = shape.property("Contents").addProperty("ADBE Vector Group");
+    var shapeGroup1 = shape.property("Contents").property("Group 1");
 
-    var myShapePath= myShapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
-    var myShapeMask = myShapePath.property("Path");
-    var myShapeM = myShapeMask.value;
-    myShapeM.vertices = vertices;
-    myShapeMask.setValue(myShapeM);
+    var shapePath= shapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
+    var shapeMask = shapePath.property("Path");
+    var shapeM = shapeMask.value;
+    shapeM.vertices = vertices;
+    shapeMask.setValue(shapeM);
 
-    myShapeGroup1.property("Contents")
+    shapeGroup1.property("Contents")
         .addProperty("ADBE Vector Graphic - Stroke")
         .property("Color").setValue([0, 0, 0]);
 
-    var trim = myShape.property("Contents")
+    var trim = shape.property("Contents")
         .addProperty("ADBE Vector Filter - Trim");
 
     // add animation keyframes
@@ -118,7 +105,7 @@ function addShape(name, vertices, ringsNumber) {
     trim.property("End").setValueAtTime(ringsNumber, 0);
     trim.property("End").setValueAtTime(ringsNumber + 1, 100);
 
-    return myShape.property("Position").value;
+    return shape.property("Position").value;
 
 }
 
@@ -159,4 +146,20 @@ function getIndexFromCoordinates(array, ringsNumber) {
   }
 
   return index;
+}
+
+function isInBoundaries(x, y) {
+  var inX = x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
+  var inY = y > BOTTOM_LEFT[1] && y < TOP_RIGHT[1];
+
+  return inX && inY;
+}
+
+function allAreTrue(array) {
+  var yes = false;
+  for(var i = 0; i < array.length; i++) {
+    yes = yes || array[i];
+  }
+
+  return yes;
 }
