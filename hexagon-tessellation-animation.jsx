@@ -2,20 +2,38 @@
 var proj= app.newProject();
 
 // constants
-var SIZE = 20;
 var TIME = 7;
-var COORDINATES = [{},{},{},{}, {}, {}, {}, {}, {}];
+var COORDINATES = [];
 
-var myComp = proj.items.addComp("hexagon-tessellation",1280,720,1,TIME,25);
+var SIZE = prompt("Iveskite apskritimo ploti", 50);
+
+var myComp = proj.items.addComp("hexagon-tessellation", 400, 400, 1, TIME, 25);
 myComp.openInViewer();
 
-drawHexagon("initial", 0, 0, 6, 0);
-drawHexagonRing(0, 0, 6, 1);
-drawHexagonRing(0, 0, 6, 2);
-drawHexagonRing(0, 0, 6, 3);
-drawHexagonRing(0, 0, 6, 4);
-drawHexagonRing(0, 0, 6, 5);
-drawHexagonRing(0, 0, 6, 6);
+draw(myComp);
+
+function draw(composition) {
+  var positionX = 0;
+  var positionY = 0;
+  var compositionX = composition.height;
+  var compositionY = composition.width;
+  var boundary = findBiggestBoundary(compositionX, compositionY, positionX, positionY);
+  alert(boundary);
+  var numberOfCircles = Math.ceil(boundary / (SIZE * 2) );
+
+  for (var i = 0; i <= numberOfCircles; i++) {
+    COORDINATES.push({});
+  }
+  alert(numberOfCircles);
+
+  // Draw center hexagon
+  drawHexagon("initial", positionX, positionY, 6, 0);
+
+  // Draw a ring of hexagons
+  for (var i = 1; i <= numberOfCircles; i++) {
+    drawHexagonRing(positionX, positionY, 6, i);
+  }
+}
 
 // http://www.redblobgames.com/grids/hexagons/ 
 // http://stackoverflow.com/questions/14916941/draw-a-hexagon-tessellation-animation-in-python
@@ -29,7 +47,7 @@ function drawHexagonRing(x, y, n, ringsNumber) {
     for (var j = 0; j < ringsNumber; j++) {
       var xc = xc + dx;
       var yc = yc + dy;
-      drawHexagon(i + '_' + j, xc, yc, n, ringsNumber);
+      drawHexagon(ringsNumber + '_' + i + '_' + j, xc, yc, n, ringsNumber);
     }
     var tmpdx = dx;
     var tmpdy = dy;
@@ -40,14 +58,15 @@ function drawHexagonRing(x, y, n, ringsNumber) {
 
 function drawHexagon(name, x, y, n, ringsNumber) {
   var shapeVertices = getPolyginVertices(n, SIZE, x, y, ringsNumber);
+  var shapePosition = [];
   if (ringsNumber > 0) {
     var index = getIndexFromCoordinates(shapeVertices, ringsNumber);
     var modifiedVertices = changeOrder(shapeVertices, index);
-    addShape(name, modifiedVertices, ringsNumber);
+    shapePosition = addShape(name, modifiedVertices, ringsNumber);
   } else {
-      addShape(name, shapeVertices, ringsNumber);
+    shapePosition = addShape(name, shapeVertices, ringsNumber);
   }
-  
+  return shapePosition;
 }
 
 function addShape(name, vertices, ringsNumber) {
@@ -74,7 +93,28 @@ function addShape(name, vertices, ringsNumber) {
     trim.property("End").setValueAtTime(ringsNumber, 0);
     trim.property("End").setValueAtTime(ringsNumber + 1, 100);
 
+    return myShape.property("Position").value;
+
 }
+
+// http://www.storminthecastle.com/2013/07/24/how-you-can-draw-regular-polygons-with-the-html5-canvas-api/
+// http://scienceprimer.com/drawing-regular-polygons-javascript-canvas
+function getPolyginVertices(numberOfSides, size, Xcenter, Ycenter, ringsNumber) {
+  var verticesArray = [];
+
+  for (var i = 0; i <= numberOfSides; i++) {
+    var angleDeg = 60 * i;
+    var angleRad = Math.PI / 180 * angleDeg;
+    var x = Xcenter + size * Math.cos(angleRad);
+    var y = Ycenter + size * Math.sin(angleRad);
+    verticesArray.push([x, y]);
+    COORDINATES[ringsNumber]['' + parseInt(x) + parseInt(y)] = true;
+  }
+
+  return verticesArray;
+}
+
+// Helper functions
 
 function changeOrder(array, index) {
   var a1 = array.slice(0, index);
@@ -96,20 +136,14 @@ function getIndexFromCoordinates(array, ringsNumber) {
   return index;
 }
 
+/*
+* returns biggest boundary
+*/
+function findBiggestBoundary(compositionX, compositionY, centerX, centerY) {
+  var boundary1 = centerX;
+  var boundary2 = centerY;
+  var boundary3 = compositionX/2 - centerX;
+  var boundary4 = compositionY/2 - centerX;
 
-// http://www.storminthecastle.com/2013/07/24/how-you-can-draw-regular-polygons-with-the-html5-canvas-api/
-// http://scienceprimer.com/drawing-regular-polygons-javascript-canvas
-function getPolyginVertices(numberOfSides, size, Xcenter, Ycenter, ringsNumber) {
-  var verticesArray = [];
-
-  for (var i = 0; i <= numberOfSides; i++) {
-    var angleDeg = 60 * i;
-    var angleRad = Math.PI / 180 * angleDeg;
-    var x = Xcenter + size * Math.cos(angleRad);
-    var y = Ycenter + size * Math.sin(angleRad);
-    verticesArray.push([x, y]);
-    COORDINATES[ringsNumber]['' + parseInt(x) + parseInt(y)] = true;
-  }
-
-  return verticesArray;
+  return Math.max(boundary1, boundary2, boundary3, boundary4);
 }
