@@ -5,9 +5,11 @@ var proj= app.newProject();
 var TIME = 7;
 var COORDINATES = [];
 
-var SIZE = prompt("Iveskite apskritimo ploti", 100);
+var SIZE = parseInt(prompt("Iveskite apskritimo ploti", 100));
+var positionX = parseInt(prompt("centro X", 100));
+var positionY = parseInt(prompt("centro Y", 0));
 
-var myComp = proj.items.addComp("hexagon-tessellation", 1900, 400, 1, TIME, 25);
+var myComp = proj.items.addComp("hexagon-tessellation", 700, 400, 1, TIME, 25);
 myComp.openInViewer();
 
 var x = myComp.width / 2;
@@ -20,9 +22,6 @@ var BOTTOM_RIGHT = [x, -y];
 draw(myComp);
 
 function draw(composition) {
-  var positionX = 100;
-  var positionY = 0;
-
   // Draw center hexagon
   drawHexagon("initial", positionX, positionY, 6, 0);
   
@@ -160,16 +159,4 @@ function getIndexFromCoordinates(array, ringsNumber) {
   }
 
   return index;
-}
-
-/*
-* returns biggest boundary
-*/
-function findBiggestBoundary(compositionX, compositionY, centerX, centerY) {
-  var boundary1 = centerX;
-  var boundary2 = centerY;
-  var boundary3 = compositionX/2 - centerX;
-  var boundary4 = compositionY/2 - centerX;
-
-  return Math.max(boundary1, boundary2, boundary3, boundary4);
 }
