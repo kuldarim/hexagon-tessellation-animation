@@ -10,28 +10,34 @@ var SIZE = prompt("Iveskite apskritimo ploti", 50);
 var myComp = proj.items.addComp("hexagon-tessellation", 400, 400, 1, TIME, 25);
 myComp.openInViewer();
 
+var x = myComp.width / 2;
+var y = myComp.height / 2;
+var TOP_LEFT = [-x, y];
+var TOP_RIGHT = [x, y];
+var BOTTOM_LEFT = [-x, -y];
+var BOTTOM_RIGHT = [x, -y];
+
 draw(myComp);
 
 function draw(composition) {
   var positionX = 0;
   var positionY = 0;
-  var compositionX = composition.height;
-  var compositionY = composition.width;
-  var boundary = findBiggestBoundary(compositionX, compositionY, positionX, positionY);
-  alert(boundary);
-  var numberOfCircles = Math.ceil(boundary / (SIZE * 2) );
-
-  for (var i = 0; i <= numberOfCircles; i++) {
-    COORDINATES.push({});
-  }
-  alert(numberOfCircles);
 
   // Draw center hexagon
   drawHexagon("initial", positionX, positionY, 6, 0);
 
   // Draw a ring of hexagons
-  for (var i = 1; i <= numberOfCircles; i++) {
-    drawHexagonRing(positionX, positionY, 6, i);
+  for (var i = 1; i <= 2; i++) {
+    var isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
+  }
+
+  
+  isInBoundaries = true;
+  var i = 1;
+  while (isInBoundaries) {
+    isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
+    alert(i);
+    i++;
   }
 }
 
@@ -43,20 +49,46 @@ function drawHexagonRing(x, y, n, ringsNumber) {
   var yc = y - ringsNumber * dc;
   var dx = -dc * Math.sqrt(3) / 2;
   var dy = dc / 2;
+  var allHexagonsAreInBoundaries = [];
   for (var i = 0; i < 6; i++) {
+    var isHexagonInBoundaries = [];
     for (var j = 0; j < ringsNumber; j++) {
       var xc = xc + dx;
       var yc = yc + dy;
+      // alert (xc + ' ' + yc);
       drawHexagon(ringsNumber + '_' + i + '_' + j, xc, yc, n, ringsNumber);
+      isHexagonInBoundaries.push(isInBoundaries(xc, yc));
     }
+    isHexagonInBoundaries.push(allAreTrue(isHexagonInBoundaries));
     var tmpdx = dx;
     var tmpdy = dy;
     dx = Math.cos(Math.PI / 3) * tmpdx + Math.sin(Math.PI / 3) * tmpdy;
     dy = -Math.sin(Math.PI / 3) * tmpdx + Math.cos(Math.PI / 3) * tmpdy;
   }
+
+  return allAreTrue(allHexagonsAreInBoundaries);
+}
+
+function isInBoundaries(x, y) {
+  var isTopLeft = TOP_LEFT[0] < x && TOP_LEFT[1] < y;
+  var isTopRight = TOP_RIGHT[0] < x && TOP_RIGHT[1] < y;
+  var isBottomLeft = BOTTOM_LEFT[0] < x && BOTTOM_LEFT[1] < y;
+  var isBottomRight = BOTTOM_RIGHT[0] < x && BOTTOM_RIGHT[1] < y;
+
+  return isTopLeft && isTopRight && isBottomLeft && isBottomRight;
+}
+
+function allAreTrue(array) {
+  var yes = true;
+  for(var i = 0; i < array.length; i++) {
+    yes = yes && array[i];
+  }
+
+  return yes;
 }
 
 function drawHexagon(name, x, y, n, ringsNumber) {
+  COORDINATES.push({});
   var shapeVertices = getPolyginVertices(n, SIZE, x, y, ringsNumber);
   var shapePosition = [];
   if (ringsNumber > 0) {
@@ -66,6 +98,7 @@ function drawHexagon(name, x, y, n, ringsNumber) {
   } else {
     shapePosition = addShape(name, shapeVertices, ringsNumber);
   }
+  //alert()
   return shapePosition;
 }
 
