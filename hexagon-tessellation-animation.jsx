@@ -7,7 +7,7 @@ var COORDINATES = [];
 
 var SIZE = prompt("Iveskite apskritimo ploti", 100);
 
-var myComp = proj.items.addComp("hexagon-tessellation", 600, 400, 1, TIME, 25);
+var myComp = proj.items.addComp("hexagon-tessellation", 1900, 400, 1, TIME, 25);
 myComp.openInViewer();
 
 var x = myComp.width / 2;
@@ -20,26 +20,16 @@ var BOTTOM_RIGHT = [x, -y];
 draw(myComp);
 
 function draw(composition) {
-  var positionX = 200;
+  var positionX = 100;
   var positionY = 0;
 
   // Draw center hexagon
   drawHexagon("initial", positionX, positionY, 6, 0);
-
-  // Draw a ring of hexagons
-  for (var i = 1; i <= 2; i++) {
-    var isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
-  }
-
   
-  isInBoundaries = true;
+  var isInBoundaries = true;
   var i = 1;
   while (isInBoundaries) {
     isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
-    alert(i);
-    if (i > 20) {
-     isInBoundaries = false;
-    }
     i++;
   }
 }
