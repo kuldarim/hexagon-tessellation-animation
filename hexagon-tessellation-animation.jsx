@@ -7,7 +7,7 @@ var COORDINATES = [];
 
 var WIDTH = getSizeOfComposition("Frame width: ", 700);
 var HEIGHT = getSizeOfComposition("Frame height: ", 400);
-var SIZE = parseInt(prompt("Enter circle width: ", 100));
+var SIZE = getCircleSize(100);
 
 var x = WIDTH / 2;
 var y = HEIGHT / 2;
@@ -186,6 +186,19 @@ function getSizeOfComposition(message, defaultValue) {
       alert("Please enter an INTEGER in range 4..30000");
     } else {
       return parseInt(size);
+    }
+  }
+}
+
+function getCircleSize(defaultValue) {
+  var size = null;
+  var max = Math.min(WIDTH, HEIGHT);
+  while (size === null || (size % 1 !== 0 ) || (size < 1) || (size > max)){
+    size = parseInt(prompt("Enter circle width: ", defaultValue));
+    if (size === null || (size % 1 !== 0 ) || (size < 1) || (size > max)){
+      alert("Please enter an INTEGER in range 1.." + max);
+    } else {
+      return size;
     }
   }
 }
