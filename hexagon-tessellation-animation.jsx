@@ -2,7 +2,7 @@
 var proj= app.newProject();
 
 // constants
-var TIME = 7;
+var TIME = 10800;
 var COORDINATES = [];
 
 var WIDTH = getSizeOfComposition("Frame width: ", 700);
