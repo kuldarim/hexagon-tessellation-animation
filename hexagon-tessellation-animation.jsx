@@ -22,6 +22,9 @@ var CENTER_Y = getCenterOfHexagon("Enter center hexagon Y coordinate: ", 0, "Y")
 var composition = proj.items.addComp("hexagon-tessellation", WIDTH, HEIGHT, 1, TIME, 25);
 composition.openInViewer();
 
+// Add white background
+composition.layers.addSolid([255,255,255],"Background", WIDTH, HEIGHT, 1);
+
 draw();
 
 function draw() {
@@ -53,7 +56,6 @@ function drawHexagonRing(x, y, n, ringsNumber) {
     for (var j = 0; j < ringsNumber; j++) {
       var xc = xc + dx;
       var yc = yc + dy;
-      // alert (xc + ' ' + yc);
       drawHexagon(ringsNumber + '_' + i + '_' + j, xc, yc, n, ringsNumber);
       isHexagonInBoundaries.push(isInBoundaries(xc, yc));
     }
@@ -80,7 +82,6 @@ function drawHexagon(name, x, y, n, ringsNumber) {
   } else {
     shapePosition = addShape(name, shapeVertices, ringsNumber);
   }
-  //alert()
   return shapePosition;
 }
 
@@ -159,12 +160,10 @@ function isInBoundaries(x, y) {
 }
 
 function isInBoundariesX(x) {
-  alert(x + " X " + BOTTOM_LEFT[0] + " " + TOP_RIGHT[0]);
  return x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
 }
 
 function isInBoundariesY(y) {
-  alert(y + " Y " + BOTTOM_LEFT[1] + " " + TOP_RIGHT[1]);
   return y > BOTTOM_LEFT[1] && y < TOP_RIGHT[1];
 }
 
