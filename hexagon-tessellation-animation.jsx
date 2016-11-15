@@ -5,33 +5,34 @@ var proj= app.newProject();
 var TIME = 7;
 var COORDINATES = [];
 
-var SIZE = parseInt(prompt("Enter circle width", 100));
-var positionX = parseInt(prompt("Enter center hexagon X coordinate", 100));
-var positionY = parseInt(prompt("Enter center hexagon Y coordinate", 0));
-var WIDTH = parseInt(prompt("Enter center hexagon Y coordinate", 700));
-var HEIGHT = parseInt(prompt("Enter center hexagon Y coordinate", 400));
+var WIDTH = getSizeOfComposition("Frame width: ", 700);
+var HEIGHT = getSizeOfComposition("Frame height: ", 400);
+var SIZE = parseInt(prompt("Enter circle width: ", 100));
 
-var composition = proj.items.addComp("hexagon-tessellation", WIDTH, HEIGHT, 1, TIME, 25);
-composition.openInViewer();
-
-var x = composition.width / 2;
-var y = composition.height / 2;
+var x = WIDTH / 2;
+var y = HEIGHT / 2;
 var TOP_LEFT = [-x, y];
 var TOP_RIGHT = [x, y];
 var BOTTOM_LEFT = [-x, -y];
 var BOTTOM_RIGHT = [x, -y];
 
+var CENTER_X = getCenterOfHexagon("Enter center hexagon X coordinate: ", 100, "X");
+var CENTER_Y = getCenterOfHexagon("Enter center hexagon Y coordinate: ", 0, "Y");
+
+var composition = proj.items.addComp("hexagon-tessellation", WIDTH, HEIGHT, 1, TIME, 25);
+composition.openInViewer();
+
 draw();
 
 function draw() {
   // Draw center hexagon
-  drawHexagon("initial", positionX, positionY, 6, 0);
+  drawHexagon("initial", CENTER_X, CENTER_Y, 6, 0);
   
   var isInBoundaries = true;
   var i = 1;
   // Draw rings while inside bondaries
   while (isInBoundaries) {
-    isInBoundaries = drawHexagonRing(positionX, positionY, 6, i);
+    isInBoundaries = drawHexagonRing(CENTER_X, CENTER_Y, 6, i);
     i++;
   }
 
@@ -157,6 +158,16 @@ function isInBoundaries(x, y) {
   return inX && inY;
 }
 
+function isInBoundariesX(x) {
+  alert(x + " X " + BOTTOM_LEFT[0] + " " + TOP_RIGHT[0]);
+ return x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
+}
+
+function isInBoundariesY(y) {
+  alert(y + " Y " + BOTTOM_LEFT[1] + " " + TOP_RIGHT[1]);
+  return y > BOTTOM_LEFT[1] && y < TOP_RIGHT[1];
+}
+
 function allAreTrue(array) {
   var yes = false;
   for(var i = 0; i < array.length; i++) {
@@ -164,4 +175,39 @@ function allAreTrue(array) {
   }
 
   return yes;
+}
+
+// Safety functions
+
+function getSizeOfComposition(message, defaultValue) {
+  var size = null;
+  while (size === null || (size % 1 !== 0 ) || (size < 4) || (size > 30000)){
+    size = prompt(message, defaultValue);
+    if (size === null || (size % 1 !== 0 ) || (size < 4) || (size > 30000)){
+      alert("Please enter an INTEGER in range 4..30000");
+    } else {
+      return parseInt(size);
+    }
+  }
+}
+
+function getCenterOfHexagon(message, defaultValue, type) {
+  var coordinate = null;
+  var validationFunction;
+  var messageOffset = ''
+  if (type === 'X') {
+    validationFunction = isInBoundariesX;
+    messageOffset = BOTTOM_LEFT[0] + '...' + TOP_RIGHT[0];
+  } else if (type === 'Y') {
+    validationFunction = isInBoundariesY;
+    messageOffset = BOTTOM_LEFT[1] + '...' + TOP_RIGHT[1];
+  }
+  while (coordinate === null || isNaN(coordinate) || !validationFunction(coordinate)){
+    coordinate = parseInt(prompt(message, defaultValue));
+    if (coordinate === null || isNaN(coordinate) || !validationFunction(coordinate)){
+      alert("Please enter an INTEGER in range " + messageOffset);
+    } else {
+      return coordinate;
+    }
+  }
 }
