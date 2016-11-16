@@ -60,7 +60,7 @@ function drawHexagonRing(x, y, n, ringsNumber) {
       isHexagonInBoundaries.push(isInBoundaries(xc, yc));
     }
     if (isHexagonInBoundaries.length > 0) {
-    	allHexagonsAreInBoundaries.push(allAreTrue(isHexagonInBoundaries));
+      allHexagonsAreInBoundaries.push(allAreTrue(isHexagonInBoundaries));
     }
     var tmpdx = dx;
     var tmpdy = dy;
@@ -86,31 +86,30 @@ function drawHexagon(name, x, y, n, ringsNumber) {
 }
 
 function addShape(name, vertices, ringsNumber) {
-    var shape = composition.layers.addShape();
-    shape.name = (name);
-    var shapeContent1 = shape.property("Contents").addProperty("ADBE Vector Group");
-    var shapeGroup1 = shape.property("Contents").property("Group 1");
+  var shape = composition.layers.addShape();
+  shape.name = (name);
+  var shapeContent1 = shape.property("Contents").addProperty("ADBE Vector Group");
+  var shapeGroup1 = shape.property("Contents").property("Group 1");
 
-    var shapePath= shapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
-    var shapeMask = shapePath.property("Path");
-    var shapeM = shapeMask.value;
+  var shapePath= shapeGroup1.property("Contents").addProperty("ADBE Vector Shape - Group");
+  var shapeMask = shapePath.property("Path");
+  var shapeM = shapeMask.value;
     shapeM.vertices = vertices;
-    shapeMask.setValue(shapeM);
+  shapeMask.setValue(shapeM);
 
-    shapeGroup1.property("Contents")
-        .addProperty("ADBE Vector Graphic - Stroke")
-        .property("Color").setValue([0, 0, 0]);
+  shapeGroup1.property("Contents")
+    .addProperty("ADBE Vector Graphic - Stroke")
+    .property("Color").setValue([0, 0, 0]);
 
-    var trim = shape.property("Contents")
-        .addProperty("ADBE Vector Filter - Trim");
+  var trim = shape.property("Contents")
+      .addProperty("ADBE Vector Filter - Trim");
 
-    // add animation keyframes
+  // add animation keyframes
 
-    trim.property("End").setValueAtTime(ringsNumber, 0);
-    trim.property("End").setValueAtTime(ringsNumber + 1, 100);
+  trim.property("End").setValueAtTime(ringsNumber, 0);
+  trim.property("End").setValueAtTime(ringsNumber + 1, 100);
 
-    return shape.property("Position").value;
-
+  return shape.property("Position").value;
 }
 
 // http://www.storminthecastle.com/2013/07/24/how-you-can-draw-regular-polygons-with-the-html5-canvas-api/
@@ -160,7 +159,7 @@ function isInBoundaries(x, y) {
 }
 
 function isInBoundariesX(x) {
- return x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
+return x > BOTTOM_LEFT[0] && x < TOP_RIGHT[0];
 }
 
 function isInBoundariesY(y) {
